@@ -24,7 +24,10 @@ function HomeScreen({navigation, route}: any) {
 
   const handelLetsGo = () => {
     setParkingData(Number(noOfIds));
-    navigation.navigate('ParkingLot');
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'ParkingLot'}],
+    });
   };
 
   return (

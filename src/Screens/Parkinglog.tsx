@@ -13,6 +13,7 @@ import {
   Modal,
 } from 'react-native';
 import {useRecoilState} from 'recoil';
+import axios from 'axios';
 import {ParkingObject, parkingState} from '../atoms/parkingState';
 
 const mobileW = Dimensions.get('window').width;
@@ -26,6 +27,7 @@ function ParkingLot({navigation}: any) {
   const [currentTime, setCurrentTime] = useState<string>(
     new Date().toLocaleTimeString(),
   );
+  const [loading, setLoading] = useState<boolean>(false);
 
   // console.log(parkingData, 'Parking Data');
 
@@ -59,16 +61,11 @@ function ParkingLot({navigation}: any) {
   };
 
   const fetchPay = async () => {
-    const body = {'car-registration': parkingData[index].reg_no, charge: fare};
-
-    const res = await fetch('https://httpstat.us/200', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body),
+    const response = await axios.post('https://httpstat.us/200', {
+      'car-registration': parkingData[index].reg_no,
+      charge: fare,
     });
-
-    const data = await res.json();
-    console.log(data);
+    console.log(response.data);
   };
 
   const payDone = () => {
@@ -85,14 +82,13 @@ function ParkingLot({navigation}: any) {
           : parkingObj,
       );
     });
-    // setLoading(false);
+    setLoading(false);
     setShowModal(!showModal);
   };
 
   const handlePay = () => {
+    setLoading(true);
     fetchPay();
-    // setLoading(true);
-
     setTimeout(payDone, 2000);
   };
 
@@ -213,9 +209,15 @@ function ParkingLot({navigation}: any) {
           </Text>
           <Text style={styles.text}>Fare : ${fare} </Text>
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <TouchableOpacity style={styles.modalbutton} onPress={handlePay}>
-              <Text style={styles.modalbuttontext}>Pay</Text>
-            </TouchableOpacity>
+            {loading ? (
+              <View style={styles.modalbutton}>
+                <ActivityIndicator size="small" color="white" />
+              </View>
+            ) : (
+              <TouchableOpacity style={styles.modalbutton} onPress={handlePay}>
+                <Text style={styles.modalbuttontext}>Pay</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               style={styles.modalbutton}
               onPress={() => {

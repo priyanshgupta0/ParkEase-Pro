@@ -41,6 +41,7 @@ function HomeScreen({navigation, route}: any) {
         keyboardType="numeric"
         onChange={value => setNoOfIds(value.nativeEvent.text)}
         placeholder="Enter Parking Spaces you have"
+        placeholderTextColor="white"
       />
       <TouchableOpacity style={styles.button} onPress={handelLetsGo}>
         <Text style={styles.buttonText}>Lets Go</Text>
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderColor: 'white',
+    color: 'white',
     borderWidth: mobileW * 0.005,
     borderRadius: 3,
     marginBottom: 16,

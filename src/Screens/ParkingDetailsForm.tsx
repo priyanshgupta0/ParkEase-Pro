@@ -20,9 +20,9 @@ const mobileH = Dimensions.get('window').height;
 
 function ParkingDetailsForm({navigation, route}: any) {
   const [parkingData, setParkingData] = useRecoilState(parkingState);
-  console.log(parkingData, 'Parking Data');
+  // console.log(parkingData, 'Parking Data');
   const {data} = route.params;
-  console.log(data, 'id');
+  // console.log(data, 'id');22
   const [carRegistration, setCarRegistration] = useState('');
   const [parkingTime, setParkingTime] = useState('');
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,8 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
-import axios from 'axios';
 import {useRecoilState} from 'recoil';
 import {ParkingObject, parkingState} from '../atoms/parkingState';
 
@@ -20,18 +20,22 @@ const mobileH = Dimensions.get('window').height;
 
 function ParkingLot({navigation}: any) {
   const [parkingData, setParkingData] = useRecoilState(parkingState);
-  console.log(parkingData, 'Parking Data');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [index, setIndex] = useState(0);
+  const [fare, setFare] = useState(0);
+  const [currentTime, setCurrentTime] = useState<string>(
+    new Date().toLocaleTimeString(),
+  );
+
+  // console.log(parkingData, 'Parking Data');
 
   const renderSlot = ({item}: {item: ParkingObject}) => {
     return (
       <TouchableOpacity
         disabled={!item.parked}
         onPress={() => {
-          //   if (item.book) {
-          //     setIndex(item.id - 1);
-          //     setShowModal(!showModal);
-          //     console.log(index);
-          //   }
+          setIndex(item.id - 1);
+          setShowModal(!showModal);
         }}
         style={[
           styles.Slot,
@@ -53,6 +57,99 @@ function ParkingLot({navigation}: any) {
       />
     );
   };
+
+  const fetchPay = async () => {
+    const body = {'car-registration': parkingData[index].reg_no, charge: fare};
+
+    const res = await fetch('https://httpstat.us/200', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+    console.log(data);
+  };
+
+  const payDone = () => {
+    setParkingData(prevParkingData => {
+      // Map through the previous parking data and update the specific object by id
+      return prevParkingData.map(parkingObj =>
+        parkingObj.id === index + 1
+          ? {
+              ...parkingObj,
+              parked: false,
+              parked_at: '',
+              reg_no: null,
+            }
+          : parkingObj,
+      );
+    });
+    // setLoading(false);
+    setShowModal(!showModal);
+  };
+
+  const handlePay = () => {
+    fetchPay();
+    // setLoading(true);
+
+    setTimeout(payDone, 2000);
+  };
+
+  useEffect(() => {
+    const calculateTimeDifference = () => {
+      const givenTime = parkingData[index].parked_at;
+      const currentTime = new Date(); // Get the current time
+      const givenTimeString = givenTime.replace(' ', ''); // Remove any special characters like ' ' from the given time
+      const givenTimeParts = givenTimeString.split(':'); // Split the given time into hours, minutes, and seconds
+      const givenHour = parseInt(givenTimeParts[0]);
+      const givenMinute = parseInt(givenTimeParts[1]);
+      const givenSecond = parseInt(givenTimeParts[2]);
+
+      if (givenTime.includes('PM') && givenHour !== 12) {
+        givenTimeParts[0] = (givenHour + 12).toString();
+      } else if (givenTime.includes('AM') && givenHour === 12) {
+        givenTimeParts[0] = '0';
+      }
+
+      const givenDateTime = new Date();
+      givenDateTime.setHours(parseInt(givenTimeParts[0]));
+      givenDateTime.setMinutes(givenMinute);
+      givenDateTime.setSeconds(givenSecond);
+
+      const differenceInMillis =
+        currentTime.getTime() - givenDateTime.getTime();
+
+      const hours = differenceInMillis / (1000 * 60 * 60);
+
+      const formattedTimeDifference = hours;
+      if (formattedTimeDifference <= 2) {
+        setFare(10);
+      } else {
+        const extraHours = Math.ceil(formattedTimeDifference - 2); // Exclude the first two hours
+        setFare(10 + extraHours * 10);
+      }
+    };
+
+    calculateTimeDifference();
+
+    let intervalId: NodeJS.Timeout | null = null;
+
+    if (showModal) {
+      intervalId = setInterval(() => {
+        setCurrentTime(new Date().toLocaleTimeString());
+      }, 1000);
+    } else {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+    }
+    return () => {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [showModal]);
 
   const handleAdd = () => {
     const availableParking = parkingData.filter(obj => !obj.parked);
@@ -96,6 +193,39 @@ function ParkingLot({navigation}: any) {
         style={{alignSelf: 'center'}}
         columnWrapperStyle={{}}
       />
+      <Modal
+        animationType={'slide'}
+        transparent={false}
+        visible={showModal}
+        onRequestClose={() => {
+          console.log('Modal has been closed.');
+        }}>
+        <View style={styles.container}>
+          <Text style={styles.text}>Modal is open!</Text>
+          <Text style={styles.text}>
+            Car Registration Number : {parkingData[index].reg_no}
+          </Text>
+          <Text style={styles.text}>
+            Parked At : {parkingData[index].parked_at}
+          </Text>
+          <Text style={styles.text}>
+            Current Time : {currentTime.toString()}{' '}
+          </Text>
+          <Text style={styles.text}>Fare : ${fare} </Text>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <TouchableOpacity style={styles.modalbutton} onPress={handlePay}>
+              <Text style={styles.modalbuttontext}>Pay</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalbutton}
+              onPress={() => {
+                setShowModal(!showModal);
+              }}>
+              <Text style={styles.modalbuttontext}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -143,7 +273,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'cyan',
     // height: mobileW * 0.1,
-    width: mobileW * 0.01,
+    width: mobileW * 0.1,
     // margin: mobileW * 0.01,
     // alignSelf: 'center',
     marginBottom: mobileW * 0.05,
@@ -178,6 +308,21 @@ const styles = StyleSheet.create({
   SlotText: {
     color: 'white',
     fontWeight: 'bold',
+    alignSelf: 'center',
+  },
+  modalbutton: {
+    backgroundColor: 'cyan',
+    height: mobileW * 0.1,
+    width: mobileW * 0.2,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    margin: mobileW * 0.05,
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  modalbuttontext: {
+    color: 'black',
+    fontWeight: '700',
     alignSelf: 'center',
   },
 });

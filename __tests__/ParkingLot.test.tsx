@@ -103,144 +103,144 @@ describe('ParkingLot Component', () => {
     // expect(setShowModalMock).toHaveBeenCalledWith(false); // Ensure setShowModal is called with false
   });
 
-  // it('calls payDone function when Pay button is pressed', async () => {
-  //   // Mock navigation object
-  //   const mockNavigation = {
-  //     navigate: jest.fn(),
-  //   };
+  it('calls payDone function when Pay button is pressed', async () => {
+    // Mock navigation object
+    const mockNavigation = {
+      navigate: jest.fn(),
+    };
 
-  //   // Mock parkingData state
-  //   const mockParkingData = [
-  //     {
-  //       id: 1,
-  //       reg_no: 'ABC123',
-  //       parked_at: new Date().toLocaleTimeString(),
-  //       parked: true,
-  //     },
-  //     {id: 2, reg_no: 'XYZ789', parked_at: '', parked: false},
-  //     // Add more mock data if needed
-  //   ];
-  //   const mockedResponse = {code: 200, description: 'OK'};
+    // Mock parkingData state
+    const mockParkingData = [
+      {
+        id: 1,
+        reg_no: 'ABC123',
+        parked_at: new Date().toLocaleTimeString(),
+        parked: true,
+      },
+      {id: 2, reg_no: 'XYZ789', parked_at: '', parked: false},
+      // Add more mock data if needed
+    ];
+    const mockedResponse = {code: 200, description: 'OK'};
 
-  //   jest.spyOn(axios, 'post').mockResolvedValueOnce(mockedResponse);
+    jest.spyOn(axios, 'post').mockResolvedValueOnce(mockedResponse);
 
-  //   // Mock RecoilRoot and provide initial parkingData state
-  //   const {getByText, findByText, queryByText} = render(
-  //     <RecoilRoot
-  //       initializeState={({set}) => set(parkingState, mockParkingData)}>
-  //       <ParkingLot navigation={mockNavigation} />
-  //     </RecoilRoot>,
-  //   );
+    // Mock RecoilRoot and provide initial parkingData state
+    const {getByText, findByText, queryByText} = render(
+      <RecoilRoot
+        initializeState={({set}) => set(parkingState, mockParkingData)}>
+        <ParkingLot navigation={mockNavigation} />
+      </RecoilRoot>,
+    );
 
-  //   // Simulate selecting a parked car
-  //   const parkedCar1 = getByText('1'); // Assuming the car with ID 1 is parked
-  //   fireEvent.press(parkedCar1);
+    // Simulate selecting a parked car
+    const parkedCar1 = getByText('1'); // Assuming the car with ID 1 is parked
+    fireEvent.press(parkedCar1);
 
-  //   // Check if the modal is opened for the selected parked car
-  //   expect(await findByText('Parking Details!')).toBeTruthy();
+    // Check if the modal is opened for the selected parked car
+    expect(await findByText('Parking Details!')).toBeTruthy();
 
-  //   const payButton = getByText('Pay');
-  //   act(() => {
-  //     fireEvent.press(payButton);
-  //   });
+    const payButton = getByText('Pay');
+    act(() => {
+      fireEvent.press(payButton);
+    });
 
-  //   // Fast forward until all timers have been executed
-  //   jest.runAllTimers();
+    // Fast forward until all timers have been executed
+    jest.runAllTimers();
 
-  //   // Wait for the payment process to complete
-  //   await waitFor(() => {
-  //     // Check if the modal is closed after payment
-  //     expect(queryByText('Parking Details!')).toBeFalsy();
-  //   });
-  // });
+    // Wait for the payment process to complete
+    await waitFor(() => {
+      // Check if the modal is closed after payment
+      expect(queryByText('Parking Details!')).toBeFalsy();
+    });
+  });
 
-  // it('should navigate to ParkingDetailsForm when a parking spot is available', () => {
-  //   const mockNavigation = {
-  //     navigate: jest.fn(),
-  //   };
+  it('should navigate to ParkingDetailsForm when a parking spot is available', () => {
+    const mockNavigation = {
+      navigate: jest.fn(),
+    };
 
-  //   // Mock parkingData state
-  //   const mockParkingData = [
-  //     {
-  //       id: 1,
-  //       reg_no: 'ABC123',
-  //       parked_at: new Date().toLocaleTimeString(),
-  //       parked: true,
-  //     },
-  //     {id: 2, reg_no: 'XYZ789', parked_at: '', parked: false},
-  //     // Add more mock data if needed
-  //   ];
+    // Mock parkingData state
+    const mockParkingData = [
+      {
+        id: 1,
+        reg_no: 'ABC123',
+        parked_at: new Date().toLocaleTimeString(),
+        parked: true,
+      },
+      {id: 2, reg_no: 'XYZ789', parked_at: '', parked: false},
+      // Add more mock data if needed
+    ];
 
-  //   const {getByTestId, getByText} = render(
-  //     <RecoilRoot
-  //       initializeState={({set}) => set(parkingState, mockParkingData)}>
-  //       <ParkingLot navigation={mockNavigation} />
-  //     </RecoilRoot>,
-  //   );
+    const {getByTestId, getByText} = render(
+      <RecoilRoot
+        initializeState={({set}) => set(parkingState, mockParkingData)}>
+        <ParkingLot navigation={mockNavigation} />
+      </RecoilRoot>,
+    );
 
-  //   act(() => {
-  //     fireEvent.press(getByText('+'));
-  //   });
+    act(() => {
+      fireEvent.press(getByText('+'));
+    });
 
-  //   expect(mockNavigation.navigate).toHaveBeenCalledWith('ParkingDetailsForm', {
-  //     data: expect.any(Number),
-  //   });
-  // });
+    expect(mockNavigation.navigate).toHaveBeenCalledWith('ParkingDetailsForm', {
+      data: expect.any(Number),
+    });
+  });
 
-  // it('should throw error when no parking spot is available', () => {
-  //   const mockNavigation = {
-  //     navigate: jest.fn(),
-  //   };
+  it('should throw error when no parking spot is available', () => {
+    const mockNavigation = {
+      navigate: jest.fn(),
+    };
 
-  //   // Mock parkingData state
-  //   const mockParkingData = [
-  //     {
-  //       id: 1,
-  //       reg_no: 'ABC123',
-  //       parked_at: new Date().toLocaleTimeString(),
-  //       parked: true,
-  //     },
-  //     // Add more mock data if needed
-  //   ];
+    // Mock parkingData state
+    const mockParkingData = [
+      {
+        id: 1,
+        reg_no: 'ABC123',
+        parked_at: new Date().toLocaleTimeString(),
+        parked: true,
+      },
+      // Add more mock data if needed
+    ];
 
-  //   const mockAlert = jest.spyOn(Alert, 'alert');
+    const mockAlert = jest.spyOn(Alert, 'alert');
 
-  //   const {getByTestId, getByText} = render(
-  //     <RecoilRoot
-  //       initializeState={({set}) => set(parkingState, mockParkingData)}>
-  //       <ParkingLot navigation={mockNavigation} />
-  //     </RecoilRoot>,
-  //   );
+    const {getByTestId, getByText} = render(
+      <RecoilRoot
+        initializeState={({set}) => set(parkingState, mockParkingData)}>
+        <ParkingLot navigation={mockNavigation} />
+      </RecoilRoot>,
+    );
 
-  //   fireEvent.press(getByText('+'));
+    fireEvent.press(getByText('+'));
 
-  //   expect(mockAlert).toHaveBeenCalledWith(
-  //     'Alert',
-  //     'No available parking spots',
-  //   );
-  // });
+    expect(mockAlert).toHaveBeenCalledWith(
+      'Alert',
+      'No available parking spots',
+    );
+  });
 });
 
-// describe('initializeParkingState', () => {
-//   it('returns an array of parking objects', () => {
-//     const mockParkingSpace = 5; // Replace with the value you want to test
+describe('initializeParkingState', () => {
+  it('returns an array of parking objects', () => {
+    const mockParkingSpace = 5; // Replace with the value you want to test
 
-//     const {result} = renderHook(() => useRecoilValue(initializeParkingState), {
-//       wrapper: ({children}) => (
-//         <RecoilRoot
-//           initializeState={({set}) => set(parkingSpace, mockParkingSpace)}>
-//           {children}
-//         </RecoilRoot>
-//       ),
-//     });
+    const {result} = renderHook(() => useRecoilValue(initializeParkingState), {
+      wrapper: ({children}) => (
+        <RecoilRoot
+          initializeState={({set}) => set(parkingSpace, mockParkingSpace)}>
+          {children}
+        </RecoilRoot>
+      ),
+    });
 
-//     expect(result.current).toEqual(
-//       Array.from({length: mockParkingSpace}, (_, index) => ({
-//         id: index + 1,
-//         parked: false,
-//         parked_at: '',
-//         reg_no: null,
-//       })),
-//     );
-//   });
-// });
+    expect(result.current).toEqual(
+      Array.from({length: mockParkingSpace}, (_, index) => ({
+        id: index + 1,
+        parked: false,
+        parked_at: '',
+        reg_no: null,
+      })),
+    );
+  });
+});

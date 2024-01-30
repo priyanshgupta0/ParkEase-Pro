@@ -15,41 +15,41 @@ const mockRoute = {
 };
 
 describe('ParkingDetailsForm', () => {
-//   it('Shows alert on wrong Reg No.', async () => {
-//     const mockAlert = jest.spyOn(Alert, 'alert');
-//     const {getByText, getByPlaceholderText} = render(
-//       <RecoilRoot
-//         initializeState={({set}) => {
-//           set(parkingState, [
-//             {id: 1, parked: false, parked_at: '', reg_no: null},
-//             {id: 2, parked: false, parked_at: '', reg_no: null},
-//             {id: 3, parked: false, parked_at: '', reg_no: null},
-//           ]);
-//         }}>
-//         <ParkingDetailsForm route={mockRoute} />
-//       </RecoilRoot>,
-//     );
-//     // Simulate entering car registration
-//     const input = getByPlaceholderText('like : MP09NA4466');
+  it('Shows alert on wrong Reg No.', async () => {
+    const mockAlert = jest.spyOn(Alert, 'alert');
+    const {getByText, getByPlaceholderText} = render(
+      <RecoilRoot
+        initializeState={({set}) => {
+          set(parkingState, [
+            {id: 1, parked: false, parked_at: '', reg_no: null},
+            {id: 2, parked: false, parked_at: '', reg_no: null},
+            {id: 3, parked: false, parked_at: '', reg_no: null},
+          ]);
+        }}>
+        <ParkingDetailsForm route={mockRoute} />
+      </RecoilRoot>,
+    );
+    // Simulate entering car registration
+    const input = getByPlaceholderText('like : MP09NA4466');
 
-//     fireEvent.changeText(input, 'ABC123');
+    fireEvent.changeText(input, 'ABC123');
 
-//     await waitFor(() => {
-//       expect(input.props.value).toBe('ABC123');
-//     });
-//     // Simulate pressing the "Get Time" button
-//     const getTimeButton = getByText('Get Time');
-//     fireEvent.press(getTimeButton);
+    await waitFor(() => {
+      expect(input.props.value).toBe('ABC123');
+    });
+    // Simulate pressing the "Get Time" button
+    const getTimeButton = getByText('Get Time');
+    fireEvent.press(getTimeButton);
 
-//     // Simulate pressing the "Let's Park" button
-//     fireEvent.press(getByText("Let's Park"));
+    // Simulate pressing the "Let's Park" button
+    fireEvent.press(getByText("Let's Park"));
 
-//     expect(mockAlert).toHaveBeenCalledWith(
-//       'Alert',
-//       'Enter valid Registration number',
-//     );
-//   });
-
+    expect(mockAlert).toHaveBeenCalledWith(
+      'Alert',
+      'Enter valid Registration number',
+    );
+  });
+  
   it('submits parking details correctly', async () => {
     const {getByText, getByPlaceholderText} = render(
       <RecoilRoot

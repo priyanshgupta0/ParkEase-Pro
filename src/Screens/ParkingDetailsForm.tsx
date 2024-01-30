@@ -25,7 +25,7 @@ function ParkingDetailsForm({navigation, route}: any) {
   // console.log(data, 'id');22
   const [carRegistration, setCarRegistration] = useState('');
   const [parkingTime, setParkingTime] = useState('');
-
+  const regex = /[A-Z]{2}\d{2}[A-Z]{2}\d{4}/;
   // Function to handle button click event to set current time
   const handleSetCurrentTime = () => {
     const currentTime = new Date().toLocaleTimeString();
@@ -33,21 +33,24 @@ function ParkingDetailsForm({navigation, route}: any) {
   };
 
   const handleSubmit = () => {
-    // setParkingData()
-    setParkingData(prevParkingData => {
-      // Map through the previous parking data and update the specific object by id
-      return prevParkingData.map(parkingObj =>
-        parkingObj.id === data
-          ? {
-              ...parkingObj,
-              parked_at: parkingTime,
-              reg_no: carRegistration,
-              parked: true,
-            }
-          : parkingObj,
-      );
-    });
-    navigation.navigate('ParkingLot');
+    if (regex.test(carRegistration)) {
+      setParkingData(prevParkingData => {
+        // Map through the previous parking data and update the specific object by id
+        return prevParkingData.map(parkingObj =>
+          parkingObj.id === data
+            ? {
+                ...parkingObj,
+                parked_at: parkingTime,
+                reg_no: carRegistration,
+                parked: true,
+              }
+            : parkingObj,
+        );
+      });
+      navigation.navigate('ParkingLot');
+    } else {
+      Alert.alert('Alert', 'Enter valid Registration number');
+    }
   };
 
   const goBack = () => {
@@ -64,7 +67,11 @@ function ParkingDetailsForm({navigation, route}: any) {
       <TextInput
         style={styles.input}
         value={carRegistration}
-        onChange={value => setCarRegistration(value.nativeEvent.text)}
+        onChangeText={text => {
+          // if () {
+          // }
+          setCarRegistration(text);
+        }}
         placeholder="like : MP09NA4466"
         placeholderTextColor="white"
       />

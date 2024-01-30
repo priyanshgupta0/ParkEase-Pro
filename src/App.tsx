@@ -2,9 +2,9 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './Screens/Home';
-import ParkingLot from './Screens/Parkinglog';
 import {RecoilRoot} from 'recoil';
 import ParkingDetailsForm from './Screens/ParkingDetailsForm';
+import ParkingLot from './Screens/Parkinglot';
 
 const Stack = createStackNavigator();
 

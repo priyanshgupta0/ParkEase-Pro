@@ -65,7 +65,6 @@ function ParkingLot({navigation}: any) {
       'car-registration': parkingData[index].reg_no,
       charge: fare,
     });
-    console.log(response.data);
   };
 
   const payDone = () => {
@@ -102,7 +101,7 @@ function ParkingLot({navigation}: any) {
       const givenMinute = parseInt(givenTimeParts[1]);
       const givenSecond = parseInt(givenTimeParts[2]);
 
-      if (givenTime.includes('PM') && givenHour !== 12) {
+      if (givenTime.includes('PM')) {
         givenTimeParts[0] = (givenHour + 12).toString();
       } else if (givenTime.includes('AM') && givenHour === 12) {
         givenTimeParts[0] = '0';
@@ -135,10 +134,6 @@ function ParkingLot({navigation}: any) {
       intervalId = setInterval(() => {
         setCurrentTime(new Date().toLocaleTimeString());
       }, 1000);
-    } else {
-      if (intervalId !== null) {
-        clearInterval(intervalId);
-      }
     }
     return () => {
       if (intervalId !== null) {
@@ -166,7 +161,7 @@ function ParkingLot({navigation}: any) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="parking-lot">
       <View
         style={{
           marginHorizontal: mobileW * 0.05,
@@ -189,25 +184,21 @@ function ParkingLot({navigation}: any) {
         style={{alignSelf: 'center'}}
         columnWrapperStyle={{}}
       />
-      <Modal
-        animationType={'slide'}
-        transparent={false}
-        visible={showModal}
-        onRequestClose={() => {
-          console.log('Modal has been closed.');
-        }}>
+      <Modal animationType={'slide'} transparent={false} visible={showModal}>
         <View style={styles.container}>
-          <Text style={styles.text}>Modal is open!</Text>
-          <Text style={styles.text}>
-            Car Registration Number : {parkingData[index].reg_no}
-          </Text>
-          <Text style={styles.text}>
-            Parked At : {parkingData[index].parked_at}
-          </Text>
-          <Text style={styles.text}>
-            Current Time : {currentTime.toString()}{' '}
-          </Text>
-          <Text style={styles.text}>Fare : ${fare} </Text>
+          <Text style={styles.auther}>Parking Details!</Text>
+          <View style={{marginHorizontal: 20}}>
+            <Text style={styles.text}>
+              Car Registration Number : {parkingData[index].reg_no}
+            </Text>
+            <Text style={styles.text}>
+              Parked At : {parkingData[index].parked_at}
+            </Text>
+            <Text style={styles.text}>
+              Current Time : {currentTime.toString()}{' '}
+            </Text>
+            <Text style={styles.text}>Fare : ${fare} </Text>
+          </View>
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             {loading ? (
               <View style={styles.modalbutton}>
@@ -262,9 +253,11 @@ const styles = StyleSheet.create({
     marginBottom: mobileW * 0.05,
   },
   auther: {
-    fontSize: mobileW * 0.04,
+    fontSize: mobileW * 0.1,
     color: 'white',
     fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: mobileW * 0.05,
   },
   text: {
     fontSize: mobileW * 0.035,

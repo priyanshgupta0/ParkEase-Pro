@@ -21,7 +21,7 @@ const mobileH = Dimensions.get('window').height;
 function HomeScreen({navigation, route}: any) {
   const [parkingData, setParkingData] = useRecoilState(parkingSpace);
   const [noOfIds, setNoOfIds] = useState('');
-
+  const regex = /^[1-9][0-9]*$/;
   const handelLetsGo = () => {
     setParkingData(Number(noOfIds));
     navigation.reset({
@@ -42,11 +42,20 @@ function HomeScreen({navigation, route}: any) {
         style={styles.input}
         value={noOfIds}
         keyboardType="numeric"
-        onChange={value => setNoOfIds(value.nativeEvent.text)}
+        maxLength={4}
+        onChangeText={value => {
+          if (regex.test(value) || value == '') {
+            setNoOfIds(value);
+          }
+        }}
         placeholder="Enter Parking Spaces you have"
         placeholderTextColor="white"
       />
-      <TouchableOpacity style={styles.button} onPress={handelLetsGo}>
+      <TouchableOpacity
+        testID="letsGoButton"
+        style={noOfIds !== '' ? styles.button : styles.Dbutton}
+        onPress={handelLetsGo}
+        disabled={!(noOfIds !== '')}>
         <Text style={styles.buttonText}>Lets Go</Text>
       </TouchableOpacity>
     </View>
@@ -96,6 +105,16 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'cyan',
+    height: mobileW * 0.1,
+    width: mobileW * 0.2,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    margin: mobileW * 0.05,
+    borderWidth: 2,
+    borderRadius: 5,
+  },
+  Dbutton: {
+    backgroundColor: 'gray',
     height: mobileW * 0.1,
     width: mobileW * 0.2,
     justifyContent: 'center',
